@@ -31,9 +31,10 @@ namespace DatingApp.API
         {
             services.AddDbContext<DataContext>(x=> x.UseSqlite
             (Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddCors();
             services.AddScoped<IAuthRepository, AuthRepository>(); // is creates one instance per request
+            services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer( options =>{
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -75,10 +76,10 @@ namespace DatingApp.API
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
-            app.UseAuthentication();
             app.UseCors(x=> x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); //Allow any origin is ok for developing mode, we could also specify the origin pages
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
       
 
