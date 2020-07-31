@@ -22,8 +22,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                     }
                     const serverError = error.error;
                     let modalStateErrors = ''; //wrong passwords that are too short etc
-                    if(serverError.erros && typeof serverError.errors === 'object'){
-                        for(const key in serverError.errors){
+                    if(serverError.errors && typeof serverError.errors === 'object'){
+                        for (const key in serverError.errors){
                             if(serverError.errors[key]) {
                                 modalStateErrors += serverError.errors[key] + '\n';
                             }
