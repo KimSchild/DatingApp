@@ -12,6 +12,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Http;
+using AutoMapper;
 
 namespace DatingApp.API
 {
@@ -31,8 +32,14 @@ namespace DatingApp.API
         {
             services.AddDbContext<DataContext>(x=> x.UseSqlite
             (Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers().AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = 
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+            });
+            
             services.AddCors();
+            services.AddAutoMapper(typeof(DatingRepository).Assembly);
             services.AddScoped<IAuthRepository, AuthRepository>(); // is creates one instance per request
             services.AddScoped<IDatingRepository, DatingRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -77,7 +84,6 @@ namespace DatingApp.API
 
             app.UseRouting();
             app.UseCors(x=> x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); //Allow any origin is ok for developing mode, we could also specify the origin pages
-
             app.UseAuthentication();
             app.UseAuthorization();
 
